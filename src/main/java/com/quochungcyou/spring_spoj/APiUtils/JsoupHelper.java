@@ -1,36 +1,74 @@
 package com.quochungcyou.spring_spoj.APiUtils;
 
+import com.google.gson.Gson;
 import com.quochungcyou.spring_spoj.Models.Player;
+import jakarta.annotation.PostConstruct;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@EnableScheduling
+@Async
+@EnableAsync
 public class JsoupHelper {
     List<Player> players = new ArrayList<>();
     public JsoupHelper() {
-
+        addPlayer();
     }
 
     public List<Player> getData() {
-        addPlayer();
-        //crawlData();
+        System.out.println("Crawling data... " + players.size());
+        for (int i = 0; i < players.size(); i++) {
+            String username = players.get(i).getUsername();
+            FileReader fileReader;
+            try {
+                fileReader = new FileReader("src/main/resources/static/" + username + ".json", StandardCharsets.UTF_8);
+                Gson gson = new Gson();
+                Player player = gson.fromJson(fileReader, Player.class);
+                players.set(i, player);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        players.sort((o1, o2) -> o2.getScore() - o1.getScore());
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).setRank(i + 1);
+        }
         return players;
     }
 
 
+    @PostConstruct
+    //cron every 10 sec
+    @Scheduled(fixedDelay = 10000)
     public void crawlData() {
+        //Multi thread
+        System.out.println("Auto Crawling data... " + players.size());
+        new Thread(this::threadCrawlData).start();
+    }
+
+    public void threadCrawlData() {
+
         try {
-            for (int i = 0; i < players.size(); i++) {
-                Player player = players.get(i);
+            for (Player player : players) {
                 String username = player.getUsername();
+
                 String url = "https://www.spoj.com/PTIT/users/" + username + "/";
                 int count = 0;
                 Document data = Jsoup.connect(url).get();
+                String avatarurl = data.select(".img-thumbnail").attr("src");
                 Elements list = data.select("td > a");
                 //Log.d("DEBUG1", String.valueOf(list1.size()) + " " + avatarurl);
                 for (Element link : list) {
@@ -43,8 +81,23 @@ public class JsoupHelper {
                         }
                     }
                 }
-                player.setScore(count);
-                System.out.println(player.getName() + " " + player.getScore());
+                try {
+                    //create file if not have
+                    File file = new File("src/main/resources/static/" + username + ".json");
+                    file.getParentFile().mkdirs();
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    FileWriter fileWriter = new FileWriter("src/main/resources/static/" + username + ".json", StandardCharsets.UTF_8);
+                    player.setScore(count);
+                    player.setUrlimage(avatarurl);
+                    fileWriter.write(new Gson().toJson(player));
+                    fileWriter.close();
+                    //System.out.println("Done write " + player.getName() + " " + player.getScore());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -81,6 +134,6 @@ public class JsoupHelper {
         players.add(new Player(24, "Trần Đức Chính", "ducchinh04", 0, 450));
         players.add(new Player(25, "Trần Tiểu Long", "longdragon02", 0, 372));
         players.add(new Player(26, "Nguyễn Nhật Thành", "divinera1", 0, 500));
-
+        players.add(new Player(27, "Nguyễn Thành Công", "d22cn090", 0, 550));
     }
 }

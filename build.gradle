@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.quochungcyou'
-version = '0.0.1-SNAPSHOT'
+version = 'v.23.08.04'
 sourceCompatibility = '17'
 
 configurations {
@@ -17,6 +17,9 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven{
+		url "https://plugins.gradle.org/m2/"
+	}
 }
 
 dependencies {
@@ -28,6 +31,12 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.jsoup:jsoup:1.15.4'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.google.code.gson:gson'
+
+
+
 
 }
 

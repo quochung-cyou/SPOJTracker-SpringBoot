@@ -1,0 +1,51 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>SPOJ Tournament</title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+	<section class="main-content">
+		<div class="container">
+
+			<h4>All Users</h4>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Rank</th>
+						<th>Name</th>
+						<th>Score</th>
+						<th>Target</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="player : ${players}">
+						<td th:text="${player.id}">
+						<td>
+							<div class="d-flex align-items-center">
+								<img th:src="${player.urlimage}" class="circle-img circle-img--small mr-2" alt="User Img">
+								<div class="user-info__basic">
+									<h5 class="mb-0" th:text="${player.name}"></h5>
+									<p class="text-muted mb-0" th:text="${player.username}"></p>
+								</div>
+							</div>
+						</td>
+						<td th:text="${player.score}"></td>
+						<td th:text="${player.target}"></td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

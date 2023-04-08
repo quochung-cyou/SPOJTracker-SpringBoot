@@ -3,14 +3,30 @@ package com.quochungcyou.spring_spoj.Models;
 import java.io.Serializable;
 
 public class Player implements Serializable {
+
     String name;
     String username;
     Integer score;
-    Integer rank;
+
+    Integer id;
     Integer target;
 
-    public Player(Integer rank, String name, String username, Integer score, Integer target) {
-        this.rank = rank;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUrlimage() {
+        return urlimage;
+    }
+
+    public void setUrlimage(String urlimage) {
+        this.urlimage = urlimage;
+    }
+
+    String urlimage;
+
+    public Player(Integer id, String name, String username, Integer score, Integer target) {
+        this.id = id;
         this.name = name;
         this.username = username;
         this.score = score;
@@ -41,12 +57,12 @@ public class Player implements Serializable {
         this.score = score;
     }
 
-    public Integer getRank() {
-        return rank;
+    public Integer getId() {
+        return id;
     }
 
-    public void setRank(Integer rank) {
-        this.rank = rank;
+    public void setRank(Integer id) {
+        this.id = id;
     }
 
     public Integer getTarget() {
