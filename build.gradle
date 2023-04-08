@@ -8,7 +8,9 @@ plugins {
 group = 'com.quochungcyou'
 version = 'v.23.08.04'
 sourceCompatibility = '17'
-
+jar {
+	enabled = false
+}
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
